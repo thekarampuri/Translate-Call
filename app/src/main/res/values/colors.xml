@@ -42,4 +42,5 @@
     <color name="red">#d50000</color>
     <color name="yellow">#ffd600</color>
     <color name="green">#00c853</color>
+    <color name="primary_text_color">#212121</color>
 </resources>

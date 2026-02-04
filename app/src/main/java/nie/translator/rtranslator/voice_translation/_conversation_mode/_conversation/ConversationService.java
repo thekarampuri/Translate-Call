@@ -44,42 +44,40 @@ import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recogn
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.RecognizerListener;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recorder;
 
-
 public class ConversationService extends VoiceTranslationService {
-    //properties
+    // properties
     public static final int SPEECH_BEAM_SIZE = 4;
     public static final int TRANSLATOR_BEAM_SIZE = 1;
 
-    //commands
+    // commands
     public static final int CHANGE_LANGUAGE = 15;
 
-    //others
+    // others
     private String textRecognized = "";
     private Translator translator;
     private String myPeerName;
     private Recognizer mVoiceRecognizer;
     private RecognizerListener mVoiceRecognizerCallback;
-    //private BluetoothHelper mBluetoothHelper;
+    // private BluetoothHelper mBluetoothHelper;
     private Global global;
     private ConversationBluetoothCommunicator.Callback communicationCallback;
     private static Handler mHandler = new Handler();
     private Handler mainHandler;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
         global = (Global) getApplication();
         mainHandler = new Handler(Looper.getMainLooper());
-        //startBluetoothSco
-        //mBluetoothHelper = new BluetoothHelper(this);
+        // startBluetoothSco
+        // mBluetoothHelper = new BluetoothHelper(this);
         mVoiceCallback = new Recorder.Callback() {
             @Override
             public void onVoiceStart() {
                 if (mVoiceRecognizer != null) {
                     super.onVoiceStart();
-                    Log.e("recorder","onVoiceStart");
-                    //we notify the client
+                    Log.e("recorder", "onVoiceStart");
+                    // we notify the client
                     ConversationService.super.notifyVoiceStart();
                 }
             }
@@ -87,7 +85,7 @@ public class ConversationService extends VoiceTranslationService {
             @Override
             public void onVoice(@NonNull float[] data, int size) {
                 if (mVoiceRecognizer != null) {
-                    super.onVoice(data,size);
+                    super.onVoice(data, size);
                     global.getLanguage(true, new Global.GetLocaleListener() {
                         @Override
                         public void onSuccess(CustomLocale result) {
@@ -109,8 +107,9 @@ public class ConversationService extends VoiceTranslationService {
             public void onVoiceEnd() {
                 if (mVoiceRecognizer != null) {
                     super.onVoiceEnd();
-                    Log.e("recorder","onVoiceEnd");
-                    // if the textRecognizer is not empty then it means that we have a result that has not been correctly recognized as final
+                    Log.e("recorder", "onVoiceEnd");
+                    // if the textRecognizer is not empty then it means that we have a result that
+                    // has not been correctly recognized as final
                     if (!textRecognized.equals("")) {
                         textRecognized = "";
                     }
@@ -135,16 +134,19 @@ public class ConversationService extends VoiceTranslationService {
                     if (!ConversationService.super.executeCommand(command, message.getData())) {
                         switch (command) {
                             case RECEIVE_TEXT:
-                                global.getLanguage(true,new Global.GetLocaleListener() {
+                                global.getLanguage(true, new Global.GetLocaleListener() {
                                     @Override
                                     public void onSuccess(CustomLocale language) {
                                         if (text != null) {
-                                            GuiMessage guiMessage = new GuiMessage(new Message(global, text), global.getTranslator().incrementCurrentResultID(), true, true);
+                                            GuiMessage guiMessage = new GuiMessage(new Message(global, text),
+                                                    global.getTranslator().incrementCurrentResultID(), true, true);
                                             // send the message
-                                            sendMessage(new ConversationMessage(new NeuralNetworkApiText(text, language)));
+                                            sendMessage(
+                                                    new ConversationMessage(new NeuralNetworkApiText(text, language)));
 
                                             notifyMessage(guiMessage);
-                                            // we save every new message in the exchanged messages so that the fragment can restore them
+                                            // we save every new message in the exchanged messages so that the fragment
+                                            // can restore them
                                             addOrUpdateMessage(guiMessage);
                                         }
                                     }
@@ -165,43 +167,86 @@ public class ConversationService extends VoiceTranslationService {
             @Override
             public void onMessageReceived(final Message message) {
                 super.onMessageReceived(message);
-                global.getLanguage(false,new Global.GetLocaleListener() {
+                global.getLanguage(false, new Global.GetLocaleListener() {
                     @Override
                     public void onSuccess(CustomLocale result) {
                         String completeText = message.getText();
-                        int languageCodeSize = Integer.valueOf(completeText.substring(completeText.length() - 1));
-                        String text = completeText.substring(0, completeText.length() - (languageCodeSize + 1));
-                        String languageCode = completeText.substring(completeText.length() - (languageCodeSize + 1), completeText.length() - 1);
+                        String text;
+                        String languageCode;
 
-                        ConversationMessage conversationMessage = new ConversationMessage(message.getSender(), new NeuralNetworkApiText(text, CustomLocale.getInstance(languageCode)));
-                        translator.translateMessage(conversationMessage, result, TRANSLATOR_BEAM_SIZE, new Translator.TranslateMessageListener() {
-                            @Override
-                            public void onTranslatedMessage(ConversationMessage conversationMessage, long messageID, boolean isFinal) {
-                                global.getTTSLanguages(true, new Global.GetLocalesListListener() {
+                        if (completeText.contains("|||")) {
+                            int separatorIndex = completeText.lastIndexOf("|||");
+                            text = completeText.substring(0, separatorIndex);
+                            languageCode = completeText.substring(separatorIndex + 3);
+                        } else {
+                            try {
+                                int languageCodeSize = Integer
+                                        .valueOf(completeText.substring(completeText.length() - 1));
+                                text = completeText.substring(0, completeText.length() - (languageCodeSize + 1));
+                                languageCode = completeText.substring(completeText.length() - (languageCodeSize + 1),
+                                        completeText.length() - 1);
+                            } catch (Exception e) {
+                                text = completeText;
+                                languageCode = "en";
+                            }
+                        }
+
+                        ConversationMessage conversationMessage = new ConversationMessage(message.getSender(),
+                                new NeuralNetworkApiText(text, CustomLocale.getInstance(languageCode)));
+                        translator.translateMessage(conversationMessage, result, TRANSLATOR_BEAM_SIZE,
+                                new Translator.TranslateMessageListener() {
                                     @Override
-                                    public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
-                                        if(isFinal && CustomLocale.containsLanguage(ttsLanguages, conversationMessage.getPayload().getLanguage())) { // check if the language can be speak
-                                            speak(conversationMessage.getPayload().getText(), conversationMessage.getPayload().getLanguage());
-                                        }
-                                        message.setText(conversationMessage.getPayload().getText());   // updating the text with the new translated text (and without the language code)
-                                        GuiMessage guiMessage = new GuiMessage(message, messageID, false, isFinal);
-                                        notifyMessage(guiMessage);
-                                        // we save every new message in the exchanged messages so that the fragment can restore them
-                                        addOrUpdateMessage(guiMessage);
+                                    public void onTranslatedMessage(ConversationMessage conversationMessage,
+                                            long messageID, boolean isFinal) {
+                                        global.getTTSLanguages(true, new Global.GetLocalesListListener() {
+                                            @Override
+                                            public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
+                                                if (isFinal) {
+                                                    if (CustomLocale.containsLanguage(ttsLanguages,
+                                                            conversationMessage.getPayload().getLanguage())) {
+                                                        speak(conversationMessage.getPayload().getText(),
+                                                                conversationMessage.getPayload().getLanguage());
+                                                    } else {
+                                                        // Notify user that TTS is not available for this language
+                                                        mainHandler.post(() -> android.widget.Toast.makeText(
+                                                                ConversationService.this,
+                                                                "TTS not available for " + conversationMessage
+                                                                        .getPayload().getLanguage()
+                                                                        .getDisplayNameWithoutTTS(),
+                                                                android.widget.Toast.LENGTH_SHORT).show());
+                                                    }
+                                                }
+                                                message.setText(conversationMessage.getPayload().getText()); // updating
+                                                                                                             // the text
+                                                                                                             // with the
+                                                                                                             // new
+                                                                                                             // translated
+                                                                                                             // text
+                                                                                                             // (and
+                                                                                                             // without
+                                                                                                             // the
+                                                                                                             // language
+                                                                                                             // code)
+                                                GuiMessage guiMessage = new GuiMessage(message, messageID, false,
+                                                        isFinal);
+                                                notifyMessage(guiMessage);
+                                                // we save every new message in the exchanged messages so that the
+                                                // fragment can restore them
+                                                addOrUpdateMessage(guiMessage);
+                                            }
+
+                                            @Override
+                                            public void onFailure(int[] reasons, long value) {
+                                                // never called in this case
+                                            }
+                                        });
                                     }
 
                                     @Override
                                     public void onFailure(int[] reasons, long value) {
-                                        //never called in this case
+                                        ConversationService.super.notifyError(reasons, value);
                                     }
                                 });
-                            }
-
-                            @Override
-                            public void onFailure(int[] reasons, long value) {
-                                ConversationService.super.notifyError(reasons, value);
-                            }
-                        });
                     }
 
                     @Override
@@ -219,7 +264,7 @@ public class ConversationService extends VoiceTranslationService {
                 }
             }
         };
-        if(global.getBluetoothCommunicator() != null) {
+        if (global.getBluetoothCommunicator() != null) {
             global.getBluetoothCommunicator().addCallback(communicationCallback);
         }
 
@@ -228,21 +273,25 @@ public class ConversationService extends VoiceTranslationService {
         mVoiceRecognizer = global.getSpeechRecognizer();
         mVoiceRecognizerCallback = new VoiceTranslationServiceRecognizerListener() {
             @Override
-            public void onSpeechRecognizedResult(String text, String languageCode, double confidenceScore, boolean isFinal) {
+            public void onSpeechRecognizedResult(String text, String languageCode, double confidenceScore,
+                    boolean isFinal) {
                 if (text != null && languageCode != null && !text.equals("") && !isMetaText(text)) {
                     CustomLocale language = CustomLocale.getInstance(languageCode);
-                    GuiMessage guiMessage = new GuiMessage(new Message(global, text), global.getTranslator().incrementCurrentResultID(), true, isFinal);
+                    GuiMessage guiMessage = new GuiMessage(new Message(global, text),
+                            global.getTranslator().incrementCurrentResultID(), true, isFinal);
                     if (isFinal) {
-                        textRecognized = "";  // to ensure that we continue to listen since in this case the result is automatically extracted
+                        textRecognized = ""; // to ensure that we continue to listen since in this case the result is
+                                             // automatically extracted
                         // send the message
                         sendMessage(new ConversationMessage(new NeuralNetworkApiText(text, language)));
 
                         notifyMessage(guiMessage);
-                        // we save every new message in the exchanged messages so that the fragment can restore them
+                        // we save every new message in the exchanged messages so that the fragment can
+                        // restore them
                         addOrUpdateMessage(guiMessage);
                     } else {
                         notifyMessage(guiMessage);
-                        textRecognized = text;  // if it equals something then when calling voiceEnd we stop recognition
+                        textRecognized = text; // if it equals something then when calling voiceEnd we stop recognition
                     }
                 }
             }
@@ -254,23 +303,28 @@ public class ConversationService extends VoiceTranslationService {
         };
 
         mVoiceRecognizer.addCallback(mVoiceRecognizerCallback);
-        //mBluetoothHelper.start();
+        // mBluetoothHelper.start();
 
-        //voice recorder initialization
+        // voice recorder initialization
         initializeVoiceRecorder();
     }
 
     private void sendMessage(ConversationMessage conversationMessage) {
-        if(global.getBluetoothCommunicator() != null) {
+        if (global.getBluetoothCommunicator() != null) {
             String languageCode = conversationMessage.getPayload().getLanguage().getCode();
-            global.getBluetoothCommunicator().sendMessage(new Message(global, conversationMessage.getPayload().getText() + languageCode + languageCode.length()));
+            // Use a separator that is unlikely to be in the text.
+            // We use standard URL/URI separator logic or just a pipe if not used.
+            // A safer specific separator: |||
+            global.getBluetoothCommunicator().sendMessage(
+                    new Message(global, conversationMessage.getPayload().getText() + "|||" + languageCode));
         }
     }
 
     public void initializeVoiceRecorder() {
         if (Tools.hasPermissions(this, REQUIRED_PERMISSIONS)) {
-            //voice recorder initialization
-            super.mVoiceRecorder = new Recorder((Global) getApplication(), true, mVoiceCallback, new BluetoothHeadsetCallback());
+            // voice recorder initialization
+            super.mVoiceRecorder = new Recorder((Global) getApplication(), true, mVoiceCallback,
+                    new BluetoothHeadsetCallback());
         }
     }
 
@@ -289,9 +343,9 @@ public class ConversationService extends VoiceTranslationService {
 
     @Override
     protected boolean isBluetoothHeadsetConnected() {
-        if(mVoiceRecorder != null) {
+        if (mVoiceRecorder != null) {
             return mVoiceRecorder.isOnHeadsetSco();
-        }else {
+        } else {
             return false;
         }
     }
@@ -299,12 +353,12 @@ public class ConversationService extends VoiceTranslationService {
     @Override
     public void onDestroy() {
         // Stop SpeechRecognizer
-        //mVoiceRecognizer.destroy();
+        // mVoiceRecognizer.destroy();
         mVoiceRecognizer.removeCallback(mVoiceRecognizerCallback);
         mVoiceRecognizer = null;
-        //stop Bluetooth helper
-        //mBluetoothHelper.stop();
-        if(global.getBluetoothCommunicator() != null) {
+        // stop Bluetooth helper
+        // mBluetoothHelper.stop();
+        if (global.getBluetoothCommunicator() != null) {
             global.getBluetoothCommunicator().removeCallback(communicationCallback);
         }
         super.onDestroy();
