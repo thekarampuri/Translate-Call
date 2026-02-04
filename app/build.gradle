@@ -28,7 +28,7 @@ android {
     compileSdkVersion 33  //33
     defaultConfig {
         applicationId "nie.translator.rtranslator"
-        targetSdkVersion 32   //32
+        targetSdkVersion 33
         versionCode 24
         versionName '2.1.4'
         minSdkVersion 24
