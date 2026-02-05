@@ -3,6 +3,6 @@
     <item
         android:width="90dp"
         android:height="64.86dp"
-        android:drawable="@drawable/app_icon_vector"
+        android:drawable="@mipmap/ic_launcher"
         android:gravity="center" />
 </layer-list>
