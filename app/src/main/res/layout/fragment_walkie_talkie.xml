@@ -73,6 +73,16 @@
             app:layout_constraintStart_toEndOf="@+id/exitButton"
             app:layout_constraintTop_toTopOf="@+id/toolbarWalkieTalkie" />
 
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbarWalkieTalkie"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exitButton"
             android:layout_width="wrap_content"
@@ -90,7 +100,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/toolbarWalkieTalkie"
             app:layout_constraintEnd_toStartOf="@+id/settingsButton"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appLogo"
             app:layout_constraintTop_toTopOf="parent" />
 
 
