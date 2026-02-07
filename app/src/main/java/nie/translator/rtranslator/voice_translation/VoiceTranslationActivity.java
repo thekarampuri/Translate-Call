@@ -154,13 +154,10 @@ public class VoiceTranslationActivity extends GeneralActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings: {
-                Intent intent = new Intent(this, SettingsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                break;
-            }
+        if (item.getItemId() == R.id.settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
