@@ -1,13 +1,13 @@
-<img src="https://github.com/niedev/RTranslator/blob/v2.00/images/logo_beta_cut.png" width="280">
+<img src="https://github.com/thekarampuri/Translate-Call/blob/main/images/logo_beta_cut.png" width="280">
 
-RTranslator is an (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source, free, and offline real-time translation app for Android.
+RTranslator is an (<a href='https://github.com/thekarampuri/Translate-Call?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source, free, and offline real-time translation app for Android.
 
 Connect to someone who has the app, connect Bluetooth headphones, put the phone in your pocket and you can have a conversation as if the other person spoke your language.
 <br /><br />
 
-![Conversation mode](https://github.com/niedev/RTranslator/blob/v2.00/images/Conversation_image.png)
+![Conversation mode](https://github.com/thekarampuri/Translate-Call/blob/main/images/Conversation_image.png)
 <br /><br />
-![WalkieTalkie mode and Costs](https://github.com/niedev/RTranslator/blob/v2.00/images/TextTranslation_and_WalkieTalkie.png)
+![WalkieTalkie mode and Costs](https://github.com/thekarampuri/Translate-Call/blob/main/images/TextTranslation_and_WalkieTalkie.png)
 <br /><br />
 
 <h3>Conversation mode</h3>
@@ -44,7 +44,7 @@ This mode is just a classic text translator, but always useful.
 
 <h3>General</h3>
 
-RTranslator uses <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition, both are (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source and state of the art AIs, have excellent quality and run directly on the phone, ensuring absolute privacy and the possibility of using RTranslator even offline without loss of quality.
+RTranslator uses <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition, both are (<a href='https://github.com/thekarampuri/Translate-Call?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source and state of the art AIs, have excellent quality and run directly on the phone, ensuring absolute privacy and the possibility of using RTranslator even offline without loss of quality.
 
 Also, RTranslator works even in the background, with the phone on standby or when using other apps (only when you use Conversation or WalkieTalkie modes). However, some phones limit the power in the background so in that case it is better to avoid it and keep the app open with the screen on.
 <br />
@@ -54,13 +54,13 @@ Also, RTranslator works even in the background, with the phone on standby or whe
 
 <h3>Download</h3>
 
-To install the app, download the latest version of the app apk file from https://github.com/niedev/RTranslator/releases/ and install it (ignore the other files, those will be downloaded automatically by the app on the first start).
+To install the app, download the latest version of the app apk file from https://github.com/thekarampuri/Translate-Call/releases/ and install it (ignore the other files, those will be downloaded automatically by the app on the first start).
 
-<a href='https://github.com/niedev/RTranslator/releases'><img alt='Get it on GitHub' src='https://github.com/niedev/RTranslator/blob/v2.00/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
+<a href='https://github.com/thekarampuri/Translate-Call/releases'><img alt='Get it on GitHub' src='https://github.com/thekarampuri/Translate-Call/blob/main/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
 
 On the first launch, RTranslator will automatically download the models for translation and speech recognition (1.2GB) and once done you can start translating.
 
-The initial download will get the models from GitHub, however <a href="https://www.reddit.com/r/China/comments/v8fv0p/why_is_github_so_slow_in_china_recently/">in some regions GitHub is very slow</a>, those who have problems of this kind can download the models separately from a computer (or in general in whatever way they prefer) and insert them manually into the app following <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
+The initial download will get the models from GitHub, however <a href="https://www.reddit.com/r/China/comments/v8fv0p/why_is_github_so_slow_in_china_recently/">in some regions GitHub is very slow</a>, those who have problems of this kind can download the models separately from a computer (or in general in whatever way they prefer) and insert them manually into the app following <a href="https://github.com/thekarampuri/Translate-Call/blob/main/Sideloading.md">this guide</a>.
 
 If you have a GitHub account and want to be notified when a new release comes out you can do so by clicking, at the top of the page, on "Watch" -> "Custom" -> "Releases" -> "Apply".
 <br /><br />
@@ -77,14 +77,14 @@ If you have a GitHub account and want to be notified when a new release comes ou
 
 - Fixed some bugs.
 
-For the full list of changes see [here](https://github.com/niedev/RTranslator/releases/tag/2.1.0).
+For the full list of changes see [here](https://github.com/thekarampuri/Translate-Call/releases/tag/2.1.0).
 <br /><br />
 
 <h3>Performance requirements</h3>
 
 I have optimized the AI models a lot to minimize RAM consumption and execution time, despite this however to be able to use the app without the risk of crashing you need a phone with at least **6GB of RAM**, and to have a good enough execution time you need a phone with a fast enough CPU.
 
-If you have a pretty crappy phone (or if you want maximum speed) you can always use <a href="https://github.com/niedev/RTranslator/tree/v1.00">version 1.0 of RTranslator</a> (but since it uses Google APIs it's not free and needs some initial setup).
+If you have a pretty crappy phone (or if you want maximum speed) you can always use <a href="https://github.com/thekarampuri/Translate-Call/tree/v1.00">version 1.0 of RTranslator</a> (but since it uses Google APIs it's not free and needs some initial setup).
 <br /><br />
 
 
@@ -113,7 +113,7 @@ To change the system TTS (and therefore the TTS used by RTranslator), download t
 
 <h3>Privacy</h3>
 
-Privacy is a fundamental right. That's why RTranslator does not collect any personal data (I don't even have a server). For more information, read the <a href="https://github.com/niedev/RTranslator/blob/v2.00/privacy/Privacy_Policy_en.md" target="_blank" rel="noopener noreferrer">privacy policy</a> (for now is the same privacy policy of RTranslator 1.0, but I will update it in the future).
+Privacy is a fundamental right. That's why RTranslator does not collect any personal data (I don't even have a server). For more information, read the <a href="https://github.com/thekarampuri/Translate-Call/blob/main/privacy/Privacy_Policy_en.md" target="_blank" rel="noopener noreferrer">privacy policy</a> (for now is the same privacy policy of RTranslator 1.0, but I will update it in the future).
 <br /><br />
 
 <h3>Libraries and models</h3>
@@ -164,7 +164,7 @@ So, if you like the app and want to say thank you and support the project, you c
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/niedev)
 
-<a href='https://www.paypal.com/donate/?business=3VBKS3WC6AFHN&no_recurring=0&currency_code=EUR'><img alt='Donate' src='https://raw.githubusercontent.com/niedev/RTranslator/v2.00/images/Paypal.png' style="width: 190px; height: 80px;" /></a>
+<a href='https://www.paypal.com/donate/?business=3VBKS3WC6AFHN&no_recurring=0&currency_code=EUR'><img alt='Donate' src='https://raw.githubusercontent.com/thekarampuri/Translate-Call/v2.00/images/Paypal.png' style="width: 190px; height: 80px;" /></a>
 
 In case you will donate, or just live a star, thank you :heart:
 <br /><br />
@@ -183,7 +183,7 @@ Take a look at these awesome projects that use RTranslator code:
 
 If you want to contribute to this project, first of all, thank you 🚀
 
-If you don't know where to start, go check the [to-do list](https://github.com/niedev/RTranslator/blob/v2.00/TODO_LIST.md), and in any case, before starting, read the [contribution guidelines](https://github.com/niedev/RTranslator/blob/v2.00/CONTRIBUTING.md).
+If you don't know where to start, go check the [to-do list](https://github.com/thekarampuri/Translate-Call/blob/main/TODO_LIST.md), and in any case, before starting, read the [contribution guidelines](https://github.com/thekarampuri/Translate-Call/blob/main/CONTRIBUTING.md).
 <br /><br />
 
 <h3>Bugs and problems</h3>
