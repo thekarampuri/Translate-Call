@@ -72,25 +72,17 @@ public class Global extends Application implements DefaultLifecycleObserver {
 
     public boolean isMostUsedLanguagesOnly() {
         SharedPreferences sharedPreferences = getSharedPreferences("default", Context.MODE_PRIVATE);
-        boolean isEnabled = sharedPreferences.getBoolean("mostUsedLanguagesOnly", false);
-        android.util.Log.d("LanguageFilter", "isMostUsedLanguagesOnly: " + isEnabled);
-        return isEnabled;
+        return sharedPreferences.getBoolean("mostUsedLanguagesOnly", false);
     }
 
     public ArrayList<CustomLocale> getFilteredLanguages(ArrayList<CustomLocale> allLanguages) {
         ArrayList<CustomLocale> filteredHelper = new ArrayList<>();
-        android.util.Log.d("LanguageFilter", "Filtering languages. Total available: " + allLanguages.size());
-        android.util.Log.d("LanguageFilter", "Target codes: " + MOST_USED_LANGUAGES.toString());
-        
         for (CustomLocale locale : allLanguages) {
             String langCode = locale.getLanguage();
-            // android.util.Log.d("LanguageFilter", "Checking: " + langCode);
             if (MOST_USED_LANGUAGES.contains(langCode)) {
                 filteredHelper.add(locale);
-                // android.util.Log.d("LanguageFilter", "Kept: " + langCode);
             }
         }
-        android.util.Log.d("LanguageFilter", "Filtered size: " + filteredHelper.size());
         return filteredHelper;
     }
 
