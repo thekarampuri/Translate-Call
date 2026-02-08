@@ -10,9 +10,6 @@
                 android:valueTo="0.95"
                 android:duration="100"
                 android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
-            <objectAnimator android:propertyName="translationZ"
-                android:valueTo="8dp"
-                android:duration="100"/>
         </set>
     </item>
     <item>
@@ -25,9 +22,6 @@
                 android:valueTo="1.0"
                 android:duration="100"
                 android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
-            <objectAnimator android:propertyName="translationZ"
-                android:valueTo="2dp"
-                android:duration="100"/>
         </set>
     </item>
 </selector>
