@@ -40,6 +40,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import nie.translator.rtranslator.Global;
 import nie.translator.rtranslator.R;
@@ -881,12 +882,21 @@ public class TranslationFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 listViewGui.setVisibility(View.VISIBLE);
 
-                listView = new LanguageListAdapter(activity, true, languages, selectedLanguage);
+                // Filter the languages
+                ArrayList<CustomLocale> filteredLanguages = new ArrayList<>();
+                String[] allowedLanguages = {"en", "hi", "mr", "ta", "kn", "as", "bn", "gu", "ks", "ur", "ja", "ko", "fr", "ar"};
+                for (CustomLocale language : languages) {
+                    if (Arrays.asList(allowedLanguages).contains(language.getCode())) {
+                        filteredLanguages.add(language);
+                    }
+                }
+
+                listView = new LanguageListAdapter(activity, true, filteredLanguages, selectedLanguage);
                 listViewGui.setAdapter(listView);
                 listViewGui.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                        if (languages.contains((CustomLocale) listView.getItem(position))) {
+                        if (filteredLanguages.contains((CustomLocale) listView.getItem(position))) {
                             switch (languageNumber) {
                                 case 1: {
                                     setFirstLanguage((CustomLocale) listView.getItem(position));

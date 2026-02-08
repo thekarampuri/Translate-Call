@@ -50,8 +50,50 @@ import nie.translator.rtranslator.voice_translation.neural_networks.translation.
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recognizer;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recorder;
 
-
 public class Global extends Application implements DefaultLifecycleObserver {
+    private static final ArrayList<String> MOST_USED_LANGUAGES = new ArrayList<String>() {
+        {
+            add("en"); // English
+            add("hi"); // Hindi
+            add("mr"); // Marathi
+            add("ta"); // Tamil
+            add("kn"); // Kannada
+            add("as"); // Assamese
+            add("bn"); // Bengali
+            add("gu"); // Gujarati
+            add("ks"); // Kashmiri
+            add("ur"); // Urdu
+            add("ja"); // Japanese
+            add("ko"); // Korean
+            add("fr"); // French
+            add("ar"); // Arabic
+        }
+    };
+
+    public boolean isMostUsedLanguagesOnly() {
+        SharedPreferences sharedPreferences = getSharedPreferences("default", Context.MODE_PRIVATE);
+        boolean isEnabled = sharedPreferences.getBoolean("mostUsedLanguagesOnly", false);
+        android.util.Log.d("LanguageFilter", "isMostUsedLanguagesOnly: " + isEnabled);
+        return isEnabled;
+    }
+
+    public ArrayList<CustomLocale> getFilteredLanguages(ArrayList<CustomLocale> allLanguages) {
+        ArrayList<CustomLocale> filteredHelper = new ArrayList<>();
+        android.util.Log.d("LanguageFilter", "Filtering languages. Total available: " + allLanguages.size());
+        android.util.Log.d("LanguageFilter", "Target codes: " + MOST_USED_LANGUAGES.toString());
+        
+        for (CustomLocale locale : allLanguages) {
+            String langCode = locale.getLanguage();
+            // android.util.Log.d("LanguageFilter", "Checking: " + langCode);
+            if (MOST_USED_LANGUAGES.contains(langCode)) {
+                filteredHelper.add(locale);
+                // android.util.Log.d("LanguageFilter", "Kept: " + langCode);
+            }
+        }
+        android.util.Log.d("LanguageFilter", "Filtered size: " + filteredHelper.size());
+        return filteredHelper;
+    }
+
     private ArrayList<CustomLocale> languages = new ArrayList<>();
     private ArrayList<CustomLocale> translatorLanguages = new ArrayList<>();
     private ArrayList<CustomLocale> ttsLanguages = new ArrayList<>();
@@ -83,30 +125,31 @@ public class Global extends Application implements DefaultLifecycleObserver {
         super.onCreate();
         mainHandler = new Handler(Looper.getMainLooper());
         recentPeersDataManager = new RecentPeersDataManager(this);
-        //initializeBluetoothCommunicator();
+        // initializeBluetoothCommunicator();
         getMicSensitivity();
         createNotificationChannel();
     }
 
-    public void initializeTranslator(NeuralNetworkApi.InitListener initListener){
-        if(translator == null) {
+    public void initializeTranslator(NeuralNetworkApi.InitListener initListener) {
+        if (translator == null) {
             translator = new Translator(this, Translator.NLLB_CACHE, initListener);
-        }else{
+        } else {
             initListener.onInitializationFinished();
         }
     }
 
-    public void initializeSpeechRecognizer(NeuralNetworkApi.InitListener initListener){
-        if(speechRecognizer == null) {
+    public void initializeSpeechRecognizer(NeuralNetworkApi.InitListener initListener) {
+        if (speechRecognizer == null) {
             speechRecognizer = new Recognizer(this, true, initListener);
-        }else{
+        } else {
             initListener.onInitializationFinished();
         }
     }
 
-    public void initializeBluetoothCommunicator(){
-        if(bluetoothCommunicator == null){
-            bluetoothCommunicator = new ConversationBluetoothCommunicator(this, getName(), BluetoothCommunicator.STRATEGY_P2P_WITH_RECONNECTION);
+    public void initializeBluetoothCommunicator() {
+        if (bluetoothCommunicator == null) {
+            bluetoothCommunicator = new ConversationBluetoothCommunicator(this, getName(),
+                    BluetoothCommunicator.STRATEGY_P2P_WITH_RECONNECTION);
         }
     }
 
@@ -119,23 +162,32 @@ public class Global extends Application implements DefaultLifecycleObserver {
         bluetoothCommunicator.destroy(new BluetoothCommunicator.DestroyCallback() {
             @Override
             public void onDestroyed() {
-                bluetoothCommunicator = new ConversationBluetoothCommunicator(Global.this, getName(), BluetoothCommunicator.STRATEGY_P2P_WITH_RECONNECTION);
+                bluetoothCommunicator = new ConversationBluetoothCommunicator(Global.this, getName(),
+                        BluetoothCommunicator.STRATEGY_P2P_WITH_RECONNECTION);
             }
         });
     }
 
-    public void getLanguages(final boolean recycleResult, boolean ignoreTTSError, final GetLocalesListListener responseListener) {
+    public void getLanguages(final boolean recycleResult, boolean ignoreTTSError,
+            final GetLocalesListListener responseListener) {
         if (recycleResult && !languages.isEmpty()) {
-            responseListener.onSuccess(languages);
+            if (isMostUsedLanguagesOnly()) {
+                responseListener.onSuccess(getFilteredLanguages(languages));
+            } else {
+                responseListener.onSuccess(languages);
+            }
         } else {
-            TTS.getSupportedLanguages(this, new TTS.SupportedLanguagesListener() {    //we load TTS languages to catch eventual TTS errors
+            TTS.getSupportedLanguages(this, new TTS.SupportedLanguagesListener() { // we load TTS languages to catch
+                                                                                   // eventual TTS errors
                 @Override
                 public void onLanguagesListAvailable(ArrayList<CustomLocale> ttsLanguages) {
                     getTranslatorLanguages(recycleResult, new GetLocalesListListener() {
                         @Override
                         public void onSuccess(ArrayList<CustomLocale> translatorLanguages) {
-                            ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
-                            //we return only the languages compatible with the speech recognizer and the translator
+                            ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer
+                                    .getSupportedLanguages(Global.this);
+                            // we return only the languages compatible with the speech recognizer and the
+                            // translator
                             final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
                             for (CustomLocale translatorLanguage : translatorLanguages) {
                                 if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
@@ -143,7 +195,11 @@ public class Global extends Application implements DefaultLifecycleObserver {
                                 }
                             }
                             languages = compatibleLanguages;
-                            responseListener.onSuccess(compatibleLanguages);
+                            if (isMostUsedLanguagesOnly()) {
+                                responseListener.onSuccess(getFilteredLanguages(languages));
+                            } else {
+                                responseListener.onSuccess(languages);
+                            }
                         }
 
                         @Override
@@ -155,20 +211,27 @@ public class Global extends Application implements DefaultLifecycleObserver {
 
                 @Override
                 public void onError(int reason) {
-                    if(ignoreTTSError) {
+                    if (ignoreTTSError) {
                         getTranslatorLanguages(recycleResult, new GetLocalesListListener() {
                             @Override
                             public void onSuccess(ArrayList<CustomLocale> translatorLanguages) {
-                                ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
-                                //we return only the languages compatible with the speech recognizer and the translator (without loading TTS languages)
+                                ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer
+                                        .getSupportedLanguages(Global.this);
+                                // we return only the languages compatible with the speech recognizer and the
+                                // translator (without loading TTS languages)
                                 final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
                                 for (CustomLocale translatorLanguage : translatorLanguages) {
                                     if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
                                         compatibleLanguages.add(translatorLanguage);
                                     }
                                 }
-                                languages = compatibleLanguages;
-                                responseListener.onSuccess(compatibleLanguages);
+                                languages = compatibleLanguages; // update cache
+
+                                if (isMostUsedLanguagesOnly()) {
+                                    responseListener.onSuccess(getFilteredLanguages(languages));
+                                } else {
+                                    responseListener.onSuccess(languages);
+                                }
                             }
 
                             @Override
@@ -176,8 +239,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
                                 responseListener.onFailure(reasons, 0);
                             }
                         });
-                    }else{
-                        responseListener.onFailure(new int[]{reason}, 0);
+                    } else {
+                        responseListener.onFailure(new int[] { reason }, 0);
                     }
                 }
             });
@@ -194,11 +257,12 @@ public class Global extends Application implements DefaultLifecycleObserver {
         }
     }
 
-    public void getTTSLanguages(final boolean recycleResult, final GetLocalesListListener responseListener){
-        if(recycleResult && !ttsLanguages.isEmpty()){
+    public void getTTSLanguages(final boolean recycleResult, final GetLocalesListListener responseListener) {
+        if (recycleResult && !ttsLanguages.isEmpty()) {
             responseListener.onSuccess(ttsLanguages);
-        }else{
-            TTS.getSupportedLanguages(this, new TTS.SupportedLanguagesListener() {    //we load TTS languages to catch eventual TTS errors
+        } else {
+            TTS.getSupportedLanguages(this, new TTS.SupportedLanguagesListener() { // we load TTS languages to catch
+                                                                                   // eventual TTS errors
                 @Override
                 public void onLanguagesListAvailable(ArrayList<CustomLocale> ttsLanguages) {
                     Global.this.ttsLanguages = ttsLanguages;
@@ -217,7 +281,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
         return translator;
     }
 
-    public void deleteTranslator(){
+    public void deleteTranslator() {
         translator = null;
     }
 
@@ -225,7 +289,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
         return speechRecognizer;
     }
 
-    public void deleteSpeechRecognizer(){
+    public void deleteSpeechRecognizer() {
         speechRecognizer = null;
     }
 
@@ -236,7 +300,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {
         DefaultLifecycleObserver.super.onStop(owner);
-        //App in background
+        // App in background
         isForeground = false;
     }
 
@@ -271,7 +335,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
                 if (recycleResult && Global.this.language != null) {
                     language = Global.this.language;
                 } else {
-                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default",
+                            Context.MODE_PRIVATE);
                     String code = sharedPreferences.getString("language", predefinedLanguage.getCode());
                     if (code != null) {
                         language = CustomLocale.getInstance(code);
@@ -312,7 +377,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
                         if (recycleResult && Global.this.firstLanguage != null) {
                             language = Global.this.firstLanguage;
                         } else {
-                            SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default",
+                                    Context.MODE_PRIVATE);
                             String code = sharedPreferences.getString("firstLanguage", predefinedLanguage.getCode());
                             if (code != null) {
                                 language = CustomLocale.getInstance(code);
@@ -358,7 +424,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
                 if (recycleResult && Global.this.secondLanguage != null) {
                     language = Global.this.secondLanguage;
                 } else {
-                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default",
+                            Context.MODE_PRIVATE);
                     String code = sharedPreferences.getString("secondLanguage", null);
                     if (code != null) {
                         language = CustomLocale.getInstance(code);
@@ -383,7 +450,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
         });
     }
 
-    public void getFirstAndSecondLanguages(final boolean recycleResult, final GetTwoLocaleListener responseListener){
+    public void getFirstAndSecondLanguages(final boolean recycleResult, final GetTwoLocaleListener responseListener) {
         getFirstLanguage(recycleResult, new GetLocaleListener() {
             @Override
             public void onSuccess(CustomLocale result1) {
@@ -418,8 +485,10 @@ public class Global extends Application implements DefaultLifecycleObserver {
                         if (recycleResult && Global.this.firstTextLanguage != null) {
                             language = Global.this.firstTextLanguage;
                         } else {
-                            SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
-                            String code = sharedPreferences.getString("firstTextLanguage", predefinedLanguage.getCode());
+                            SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default",
+                                    Context.MODE_PRIVATE);
+                            String code = sharedPreferences.getString("firstTextLanguage",
+                                    predefinedLanguage.getCode());
                             if (code != null) {
                                 language = CustomLocale.getInstance(code);
                             }
@@ -464,7 +533,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
                 if (recycleResult && Global.this.secondTextLanguage != null) {
                     language = Global.this.secondTextLanguage;
                 } else {
-                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default",
+                            Context.MODE_PRIVATE);
                     String code = sharedPreferences.getString("secondTextLanguage", null);
                     if (code != null) {
                         language = CustomLocale.getInstance(code);
@@ -489,7 +559,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
         });
     }
 
-    public void getFirstAndSecondTextLanguages(final boolean recycleResult, final GetTwoLocaleListener responseListener){
+    public void getFirstAndSecondTextLanguages(final boolean recycleResult,
+            final GetTwoLocaleListener responseListener) {
         getFirstTextLanguage(recycleResult, new GetLocaleListener() {
             @Override
             public void onSuccess(CustomLocale result1) {
@@ -565,11 +636,9 @@ public class Global extends Application implements DefaultLifecycleObserver {
         editor.apply();
     }
 
-
     public int getAmplitudeThreshold() {
         return amplitudeThreshold;
     }
-
 
     public int getMicSensitivity() {
         if (micSensitivity == -1) {
@@ -624,9 +693,13 @@ public class Global extends Application implements DefaultLifecycleObserver {
     private void setAmplitudeThreshold(int micSensitivity) {
         float amplitudePercentage = 1f - (micSensitivity / 100f);
         if (amplitudePercentage < 0.5f) {
-            amplitudeThreshold = Math.round(Recorder.MIN_AMPLITUDE_THRESHOLD + ((Recorder.DEFAULT_AMPLITUDE_THRESHOLD - Recorder.MIN_AMPLITUDE_THRESHOLD) * (amplitudePercentage * 2)));
+            amplitudeThreshold = Math.round(Recorder.MIN_AMPLITUDE_THRESHOLD
+                    + ((Recorder.DEFAULT_AMPLITUDE_THRESHOLD - Recorder.MIN_AMPLITUDE_THRESHOLD)
+                            * (amplitudePercentage * 2)));
         } else {
-            amplitudeThreshold = Math.round(Recorder.DEFAULT_AMPLITUDE_THRESHOLD + ((Recorder.MAX_AMPLITUDE_THRESHOLD - Recorder.DEFAULT_AMPLITUDE_THRESHOLD) * ((amplitudePercentage - 0.5F) * 2)));
+            amplitudeThreshold = Math.round(Recorder.DEFAULT_AMPLITUDE_THRESHOLD
+                    + ((Recorder.MAX_AMPLITUDE_THRESHOLD - Recorder.DEFAULT_AMPLITUDE_THRESHOLD)
+                            * ((amplitudePercentage - 0.5F) * 2)));
         }
     }
 
@@ -660,8 +733,8 @@ public class Global extends Application implements DefaultLifecycleObserver {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", savedName);
         editor.apply();
-        if(getBluetoothCommunicator() != null) {
-            getBluetoothCommunicator().setName(savedName);  //si aggiorna il nome anche per il comunicator
+        if (getBluetoothCommunicator() != null) {
+            getBluetoothCommunicator().setName(savedName); // si aggiorna il nome anche per il comunicator
         }
     }
 
@@ -712,13 +785,14 @@ public class Global extends Application implements DefaultLifecycleObserver {
         editor.apply();
     }
 
-
-    private void createNotificationChannel(){
+    private void createNotificationChannel() {
         String channelID = "service_background_notification";
         String channelName = getResources().getString(R.string.notification_channel_name);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_LOW);
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName,
+                    NotificationManager.IMPORTANCE_LOW);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
         }
     }
@@ -726,7 +800,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
     /**
      * Returns the total RAM size of the device in MB
      */
-    public long getTotalRamSize(){
+    public long getTotalRamSize() {
         ActivityManager actManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
         actManager.getMemoryInfo(memInfo);
@@ -738,7 +812,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
     /**
      * Returns the available RAM size of the device in MB
      */
-    public long getAvailableRamSize(){
+    public long getAvailableRamSize() {
         ActivityManager actManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
         actManager.getMemoryInfo(memInfo);
@@ -752,7 +826,7 @@ public class Global extends Application implements DefaultLifecycleObserver {
      */
     public long getAvailableInternalMemorySize() {
         File internalFilesDir = this.getFilesDir();
-        if(internalFilesDir != null) {
+        if (internalFilesDir != null) {
             long freeMBInternal = new File(internalFilesDir.getAbsoluteFile().toString()).getFreeSpace() / 1000000L;
             return freeMBInternal;
         }
@@ -764,14 +838,12 @@ public class Global extends Application implements DefaultLifecycleObserver {
      */
     public long getAvailableExternalMemorySize() {
         File externalFilesDir = this.getExternalFilesDir(null);
-        if(externalFilesDir != null) {
+        if (externalFilesDir != null) {
             long freeMBExternal = new File(externalFilesDir.getAbsoluteFile().toString()).getFreeSpace() / 1000000L;
             return freeMBExternal;
         }
         return -1;
     }
-
-
 
     public boolean isNetworkOnWifi() {
         WifiManager wifi_m = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -786,4 +858,3 @@ public class Global extends Application implements DefaultLifecycleObserver {
         }
     }
 }
-

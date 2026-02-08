@@ -143,6 +143,8 @@
     <string name="preference_title_show_original_transcription">Show original transcriptions beyond the translation</string>
     <string name="preference_title_support_tts_quality">Support languages with low quality tts</string>
     <string name="preference_title_language">Personal language</string>
+    <string name="preference_title_most_used_languages">Most used languages</string>
+    <string name="preference_description_most_used_languages">Show only the most common languages in the selection list</string>
     <string name="preference_title_tts">Text to speech</string>
     <string name="preference_title_speech_timeout">End of voice timeout</string>
     <string name="preference_title_prev_voice_duration">Voice anticipation duration</string>

@@ -42,18 +42,17 @@ import nie.translator.rtranslator.Global;
 import nie.translator.rtranslator.R;
 import nie.translator.rtranslator.tools.ErrorCodes;
 
-
 public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String DEFAULT_NAME = "user";
-    //self callbacks
+    // self callbacks
     public static final int ON_INTERNET_LACK = 0;
-    //internet Lack types
+    // internet Lack types
     public static final int DOWNLOAD_LANGUAGES = 0;
     public static final int ON_MISSING_GOOGLE_TTS = 2;
-    //variables
+    // variables
     private int downloads = 0;
     private boolean isDownloading = false;
-    //objects
+    // objects
     private GalleryImageSelector userImageContainer;
     private ProgressBar progressBar;
     private Global global;
@@ -72,7 +71,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             removeDownload();
             switch (data.getInt("type")) {
                 case ON_INTERNET_LACK: {
-                    //creation of the dialog.
+                    // creation of the dialog.
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setCancelable(false);
 
@@ -103,10 +102,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     });
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getPreferenceManager().setSharedPreferencesName("default");
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
     }
@@ -123,10 +122,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-
         // to scroll the scrollview up
-        /*recyclerView.setFocusable(false);
-        image.requestFocus();*/
+        /*
+         * recyclerView.setFocusable(false);
+         * image.requestFocus();
+         */
     }
 
     @Override
@@ -141,19 +141,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         userImagePreference.setLifecycleListener(new UserImagePreference.LifecycleListener() {
             @Override
             public void onBindViewHolder() {
-                userImageContainer = new GalleryImageSelector(userImagePreference.getImage(), activity, SettingsFragment.this, R.drawable.user_icon, "com.gallery.RTranslator.2.0.provider");
+                userImageContainer = new GalleryImageSelector(userImagePreference.getImage(), activity,
+                        SettingsFragment.this, R.drawable.user_icon, "com.gallery.RTranslator.2.0.provider");
             }
         });
 
         // user name initialization
         userNamePreference = (UserNamePreference) findPreference("changeName");
         userNamePreference.setActivity(activity);
-        /*userNamePreference.getEditTextHeight(new UserNamePreference.DateCallback() {
-            @Override
-            public void onViewHeightMeasured(int height) {
-                creditPreference.setButtonHeight(activity,height);
-            }
-        });*/
+        /*
+         * userNamePreference.getEditTextHeight(new UserNamePreference.DateCallback() {
+         * 
+         * @Override
+         * public void onViewHeightMeasured(int height) {
+         * creditPreference.setButtonHeight(activity,height);
+         * }
+         * });
+         */
 
         // change microphone sensibility initialization
         SeekBarPreference micSensibilityPreference = (SeekBarPreference) findPreference("micSensibilitySetting");
@@ -163,9 +167,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         supportLanguagesQualityPreference = (SupportLanguagesQuality) findPreference("languagesNNQualityLow");
         supportLanguagesQualityPreference.setFragment(this);
 
-        showOriginalTranscriptionMsgPreference = (ShowOriginalTranscriptionMsgPreference) findPreference("ShowOriginalTranscriptionMsgPreference");
+        showOriginalTranscriptionMsgPreference = (ShowOriginalTranscriptionMsgPreference) findPreference(
+                "ShowOriginalTranscriptionMsgPreference");
         showOriginalTranscriptionMsgPreference.setFragment(this);
-
 
         // language support option with low quality tts initialization
         supportTtsQualityPreference = (SupportTtsQualityPreference) findPreference("languagesQualityLow");
@@ -214,7 +218,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //call onActivityResult
+        // call onActivityResult
         userImageContainer.onActivityResult(requestCode, resultCode, data, true);
     }
 
@@ -271,7 +275,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
     }
-
 
     public void onFailure(int[] reasons, long value, int action, @Nullable String data) {
         for (int aReason : reasons) {
