@@ -16,17 +16,35 @@
     *-->
 
 <resources>
-    <color name="primary">#43a047</color>
-    <color name="primary_dark">#388e3c</color>
-    <color name="primary_very_dark">#296B2C</color>
-    <color name="primary_lite">#66bb6a</color>
-    <color name="primary_very_lite">#E6F8E6</color>   <!-- #DEF8E0 -->  <!-- #E9FFE9-->
-    <color name="accent">#36b024</color>
-    <color name="secondary">#ff0099cc</color>
-    <color name="secondaryTransparent">#320099cc</color>
-    <color name="background_discover">#5a43a047</color>
-    <color name="background_advertize">#5a43a047</color>
-    <color name="pressed_color">#cfd8dc</color>
+    <!-- Primary Purple Colors -->
+    <color name="primary">#7B2CBF</color>              <!-- Deep Purple -->
+    <color name="primary_dark">#5A189A</color>         <!-- Darker Purple -->
+    <color name="primary_very_dark">#3C096C</color>    <!-- Very Dark Purple -->
+    <color name="primary_lite">#9D4EDD</color>         <!-- Light Purple -->
+    <color name="primary_very_lite">#E0AAFF</color>    <!-- Very Light Purple -->
+    
+    <!-- Accent Colors -->
+    <color name="accent">#C77DFF</color>               <!-- Bright Purple Accent -->
+    <color name="secondary">#F72585</color>            <!-- Pink Accent -->
+    <color name="secondaryTransparent">#32F72585</color>
+    
+    <!-- Background Colors - Half White Theme -->
+    <color name="background_primary">#FFFFFF</color>   <!-- Pure White -->
+    <color name="background_secondary">#F8F9FA</color> <!-- Off-White -->
+    <color name="background_tertiary">#E9ECEF</color>  <!-- Light Gray-White -->
+    <color name="background_discover">#5A7B2CBF</color>
+    <color name="background_advertize">#5A7B2CBF</color>
+    
+    <!-- Interactive States -->
+    <color name="pressed_color">#E0AAFF</color>        <!-- Light Purple on Press -->
+    <color name="ripple_color">#40C77DFF</color>       <!-- Purple Ripple (25% opacity) -->
+    
+    <!-- Text Colors -->
+    <color name="primary_text_color">#212529</color>   <!-- Dark Text -->
+    <color name="secondary_text_color">#6C757D</color> <!-- Gray Text -->
+    <color name="text_on_purple">#FFFFFF</color>       <!-- White Text on Purple -->
+    
+    <!-- Grayscale -->
     <color name="black">#212121</color>
     <color name="light_black">#404040</color>
     <color name="very_very_dark_gray">#5A5A5A</color>
@@ -39,8 +57,9 @@
     <color name="very_very_light_gray">#F5F5F5</color>
     <color name="white">#fafafa</color>
     <color name="accent_white">#ffffff</color>
+    
+    <!-- Status Colors -->
     <color name="red">#d50000</color>
     <color name="yellow">#ffd600</color>
     <color name="green">#00c853</color>
-    <color name="primary_text_color">#212121</color>
 </resources>

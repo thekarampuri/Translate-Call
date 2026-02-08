@@ -78,6 +78,7 @@
             android:layout_marginEnd="8dp"
             android:backgroundTint="@android:color/transparent"
             android:tint="@color/primary_very_dark"
+            android:stateListAnimator="@animator/button_press_animator"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/toolbarTranslator"
             app:layout_constraintHorizontal_bias="1.0"
@@ -249,6 +250,7 @@
             android:backgroundTint="@android:color/transparent"
             android:tint="@color/primary_very_dark"
             android:elevation="0dp"
+            android:stateListAnimator="@animator/button_press_animator"
             app:layout_constraintBottom_toBottomOf="@+id/firstLanguageSelectorContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -280,6 +282,7 @@
             android:backgroundTint="@android:color/transparent"
             android:clickable="false"
             android:tint="@color/primary_very_dark"
+            android:stateListAnimator="@animator/button_press_animator"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline10"
             app:layout_constraintHorizontal_bias="0.0"
@@ -667,6 +670,7 @@
                         android:visibility="visible"
                         android:outlineProvider="none"
                         android:lines="1"
+                        android:stateListAnimator="@animator/button_press_animator"
                         app:elevation="0dp"
                         app:cornerRadius="20dp"
                         app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
@@ -735,6 +739,7 @@
                         app:layout_constraintVertical_bias="1.0"
                         app:maxImageSize="40dp"
                         app:rippleColor="@color/light_gray"
+                        android:stateListAnimator="@animator/button_press_animator"
                         app:tint="@color/primary_very_dark" />
 
                     <TextView
@@ -776,6 +781,7 @@
                         app:layout_constraintVertical_bias="1.0"
                         app:maxImageSize="40dp"
                         app:rippleColor="@color/light_gray"
+                        android:stateListAnimator="@animator/button_press_animator"
                         app:tint="@color/primary_very_dark" />
 
                     <TextView

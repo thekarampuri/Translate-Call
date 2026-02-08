@@ -76,6 +76,9 @@ public class WalkieTalkieService extends VoiceTranslationService {
     @Override
     public void onCreate() {
         super.onCreate();
+    }
+
+    public void initialize(){
         translator = ((Global) getApplication()).getTranslator();
         speechRecognizer = ((Global) getApplication()).getSpeechRecognizer();
         clientHandler = new Handler(new Handler.Callback() {
@@ -375,6 +378,10 @@ public class WalkieTalkieService extends VoiceTranslationService {
         };
         //voice recorder initialization
         initializeVoiceRecorder();
+        if (speechRecognizer != null) {
+            speechRecognizer.addMultiCallback(speechRecognizerCallback);
+            speechRecognizer.addCallback(speechRecognizerSingleCallback);
+        }
     }
 
     public void initializeVoiceRecorder(){
@@ -386,26 +393,24 @@ public class WalkieTalkieService extends VoiceTranslationService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final CustomLocale finalFirstLanguage = this.firstLanguage;
-        final CustomLocale finalSecondLanguage = this.secondLanguage;
+        if (translator == null) {
+            initialize();
+        }
 
         //getGroup the languages
         firstLanguage = (CustomLocale) intent.getSerializableExtra("firstLanguage");
         secondLanguage = (CustomLocale) intent.getSerializableExtra("secondLanguage");
 
-        if(finalFirstLanguage==null || finalSecondLanguage==null ) {  //se è il primo avvio
-            //we attach the speech recognition callbacks
-            speechRecognizer.addMultiCallback(speechRecognizerCallback);
-            speechRecognizer.addCallback(speechRecognizerSingleCallback);
-        }
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         //disconnect speechRecognizerCallback
-        speechRecognizer.removeMultiCallback(speechRecognizerCallback);
-        speechRecognizer.removeCallback(speechRecognizerSingleCallback);
+        if (speechRecognizer != null) {
+            speechRecognizer.removeMultiCallback(speechRecognizerCallback);
+            speechRecognizer.removeCallback(speechRecognizerSingleCallback);
+        }
         super.onDestroy();
     }
 
