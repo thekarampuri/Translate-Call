@@ -46,19 +46,19 @@
         app:allowDividerAbove="true"
         app:allowDividerBelow="true">
         <nie.translator.rtranslator.settings.SupportLanguagesQuality
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="languagesNNQualityLow"
             android:title="@string/preference_title_languages_quality"
             android:summary="@string/preference_description_languages_quality"
             app:iconSpaceReserved="false" />
         <nie.translator.rtranslator.settings.SupportTtsQualityPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="languagesQualityLow"
             android:title="@string/preference_title_support_tts_quality"
             android:summary="@string/preference_description_support_tts_quality"
             app:iconSpaceReserved="false" />
         <androidx.preference.SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="mostUsedLanguagesOnly"
             android:title="@string/preference_title_most_used_languages"
             android:summary="@string/preference_description_most_used_languages"
