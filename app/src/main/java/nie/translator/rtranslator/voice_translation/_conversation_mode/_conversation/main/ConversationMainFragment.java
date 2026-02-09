@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ import nie.translator.rtranslator.tools.services_communication.ServiceCommunicat
 import nie.translator.rtranslator.voice_translation.VoiceTranslationFragment;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationService;
 import nie.translator.rtranslator.voice_translation._conversation_mode._conversation.ConversationService;
+import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity; // Added for activity
 
 public class ConversationMainFragment extends VoiceTranslationFragment {
     private boolean isEditTextOpen = false;
@@ -65,6 +67,13 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     private ImageButton micPlaceHolder;
     private android.widget.Spinner languageSpinner;
     private Handler mHandler = new Handler();
+
+    // Peer profile UI elements
+    private androidx.cardview.widget.CardView peerProfileCard;
+    private ImageView peerAvatar;
+    private TextView peerName;
+    private TextView peerStatus;
+
     // connection
     protected VoiceTranslationService.VoiceTranslationServiceCommunicator conversationServiceCommunicator;
     protected VoiceTranslationService.VoiceTranslationServiceCallback conversationServiceCallback;
@@ -140,6 +149,12 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                                                  // the service (to avoid instant changes of the UI).
 
         languageSpinner = view.findViewById(R.id.spinner_language);
+
+        // Initialize peer profile UI elements
+        peerProfileCard = view.findViewById(R.id.peer_profile_card);
+        peerAvatar = view.findViewById(R.id.peer_avatar);
+        peerName = view.findViewById(R.id.peer_name);
+        peerStatus = view.findViewById(R.id.peer_status);
     }
 
     private void loadLanguages() {
@@ -428,6 +443,9 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 }
             });
         }
+
+        // Update peer information
+        updatePeerInfo();
     }
 
     @Override
@@ -703,6 +721,45 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Update the peer profile information displayed in the UI
+     */
+    private void updatePeerInfo() {
+        if (activity == null || peerProfileCard == null) {
+            return;
+        }
+
+        // Get connected peers list
+        ArrayList<nie.translator.rtranslator.tools.gui.peers.GuiPeer> connectedPeers = activity.getConnectedPeersList();
+
+        if (connectedPeers != null && connectedPeers.size() > 0) {
+            // Show the first connected peer's information
+            nie.translator.rtranslator.tools.gui.peers.GuiPeer peer = connectedPeers.get(0);
+
+            // Update peer name
+            if (peerName != null) {
+                peerName.setText(peer.getName());
+            }
+
+            // Update peer status
+            if (peerStatus != null) {
+                if (peer.isReconnecting()) {
+                    peerStatus.setText("Reconnecting...");
+                } else if (peer.isConnected()) {
+                    peerStatus.setText("Connected");
+                } else {
+                    peerStatus.setText("Connecting...");
+                }
+            }
+
+            // Show the peer profile card
+            peerProfileCard.setVisibility(View.VISIBLE);
+        } else {
+            // Hide the peer profile card if no peers are connected
+            peerProfileCard.setVisibility(View.GONE);
         }
     }
 
