@@ -148,46 +148,110 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 @Override
                 public void onSuccess(final ArrayList<nie.translator.rtranslator.tools.CustomLocale> languages) {
                     if (getContext() != null) {
-                        ArrayList<String> languageNames = new ArrayList<>();
-                        for (nie.translator.rtranslator.tools.CustomLocale locale : languages) {
-                            languageNames.add(locale.getDisplayNameWithoutTTS());
-                        }
-
-                        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(getContext(),
-                                android.R.layout.simple_spinner_item, languageNames);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        languageSpinner.setAdapter(adapter);
-
-                        // Set current selection
-                        global.getLanguage(true, new nie.translator.rtranslator.Global.GetLocaleListener() {
+                        // Get TTS languages
+                        global.getTTSLanguages(true, new nie.translator.rtranslator.Global.GetLocalesListListener() {
                             @Override
-                            public void onSuccess(nie.translator.rtranslator.tools.CustomLocale currentLocale) {
-                                int index = nie.translator.rtranslator.tools.CustomLocale.search(languages,
-                                        currentLocale);
-                                if (index != -1) {
-                                    languageSpinner.setSelection(index);
+                            public void onSuccess(
+                                    ArrayList<nie.translator.rtranslator.tools.CustomLocale> ttsLanguages) {
+                                // Get STT (Speech Recognition) languages
+                                ArrayList<nie.translator.rtranslator.tools.CustomLocale> sttLanguages = nie.translator.rtranslator.voice_translation.neural_networks.voice.Recognizer
+                                        .getSupportedLanguages(getContext());
+
+                                ArrayList<String> languageNames = new ArrayList<>();
+                                for (nie.translator.rtranslator.tools.CustomLocale locale : languages) {
+                                    languageNames.add(locale.getDisplayName(ttsLanguages, sttLanguages));
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(int[] reasons, long value) {
-                            }
-                        });
+                                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                                        getContext(),
+                                        android.R.layout.simple_spinner_item, languageNames);
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                languageSpinner.setAdapter(adapter);
 
-                        languageSpinner
-                                .setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                                // Set current selection
+                                global.getLanguage(true, new nie.translator.rtranslator.Global.GetLocaleListener() {
                                     @Override
-                                    public void onItemSelected(android.widget.AdapterView<?> parent, View view,
-                                            int position, long id) {
-                                        if (position >= 0 && position < languages.size()) {
-                                            global.setLanguage(languages.get(position));
+                                    public void onSuccess(nie.translator.rtranslator.tools.CustomLocale currentLocale) {
+                                        int index = nie.translator.rtranslator.tools.CustomLocale.search(languages,
+                                                currentLocale);
+                                        if (index != -1) {
+                                            languageSpinner.setSelection(index);
                                         }
                                     }
 
                                     @Override
-                                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                                    public void onFailure(int[] reasons, long value) {
                                     }
                                 });
+
+                                languageSpinner
+                                        .setOnItemSelectedListener(
+                                                new android.widget.AdapterView.OnItemSelectedListener() {
+                                                    @Override
+                                                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                                            View view,
+                                                            int position, long id) {
+                                                        if (position >= 0 && position < languages.size()) {
+                                                            global.setLanguage(languages.get(position));
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onNothingSelected(
+                                                            android.widget.AdapterView<?> parent) {
+                                                    }
+                                                });
+                            }
+
+                            @Override
+                            public void onFailure(int[] reasons, long value) {
+                                // Fallback: use getDisplayNameWithoutTTS if TTS languages can't be loaded
+                                ArrayList<String> languageNames = new ArrayList<>();
+                                for (nie.translator.rtranslator.tools.CustomLocale locale : languages) {
+                                    languageNames.add(locale.getDisplayNameWithoutTTS());
+                                }
+
+                                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                                        getContext(),
+                                        android.R.layout.simple_spinner_item, languageNames);
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                languageSpinner.setAdapter(adapter);
+
+                                // Set current selection
+                                global.getLanguage(true, new nie.translator.rtranslator.Global.GetLocaleListener() {
+                                    @Override
+                                    public void onSuccess(nie.translator.rtranslator.tools.CustomLocale currentLocale) {
+                                        int index = nie.translator.rtranslator.tools.CustomLocale.search(languages,
+                                                currentLocale);
+                                        if (index != -1) {
+                                            languageSpinner.setSelection(index);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(int[] reasons, long value) {
+                                    }
+                                });
+
+                                languageSpinner
+                                        .setOnItemSelectedListener(
+                                                new android.widget.AdapterView.OnItemSelectedListener() {
+                                                    @Override
+                                                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                                            View view,
+                                                            int position, long id) {
+                                                        if (position >= 0 && position < languages.size()) {
+                                                            global.setLanguage(languages.get(position));
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onNothingSelected(
+                                                            android.widget.AdapterView<?> parent) {
+                                                    }
+                                                });
+                            }
+                        });
                     }
                 }
 
@@ -333,6 +397,36 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
             }
         } else {
             connectToService();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update language spinner to reflect current default language
+        if (global != null && languageSpinner != null && languageSpinner.getAdapter() != null) {
+            global.getLanguages(true, true, new nie.translator.rtranslator.Global.GetLocalesListListener() {
+                @Override
+                public void onSuccess(final ArrayList<nie.translator.rtranslator.tools.CustomLocale> languages) {
+                    global.getLanguage(true, new nie.translator.rtranslator.Global.GetLocaleListener() {
+                        @Override
+                        public void onSuccess(nie.translator.rtranslator.tools.CustomLocale currentLocale) {
+                            int index = nie.translator.rtranslator.tools.CustomLocale.search(languages, currentLocale);
+                            if (index != -1 && languageSpinner.getSelectedItemPosition() != index) {
+                                languageSpinner.setSelection(index);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int[] reasons, long value) {
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(int[] reasons, long value) {
+                }
+            });
         }
     }
 

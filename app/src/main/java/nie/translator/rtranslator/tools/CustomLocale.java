@@ -39,7 +39,7 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
         locale = new Locale(languageCode, countryCode);
     }
 
-    public CustomLocale(String languageCode){
+    public CustomLocale(String languageCode) {
         locale = new Locale(languageCode);
     }
 
@@ -59,7 +59,6 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
         }
         return locale;
     }
-
 
     public String getLanguage() {
         return locale.getLanguage();
@@ -157,28 +156,49 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
 
     public String getDisplayName(ArrayList<CustomLocale> ttsLanguages) {
         String name = locale.getDisplayName();
-        name = name.substring(0,1).toUpperCase(locale) + name.substring(1);  //we convert the first letter to uppercase
+        name = name.substring(0, 1).toUpperCase(locale) + name.substring(1); // we convert the first letter to uppercase
         if (containsLanguage(ttsLanguages, CustomLocale.getInstance(locale.getLanguage()))) {
             return name;
         } else {
-            return name + " (no TTS)";    // Notice that users cannot use TTS for this language.
+            return name + " (no TTS)"; // Notice that users cannot use TTS for this language.
+        }
+    }
+
+    public String getDisplayName(ArrayList<CustomLocale> ttsLanguages, ArrayList<CustomLocale> sttLanguages) {
+        String name = locale.getDisplayName();
+        name = name.substring(0, 1).toUpperCase(locale) + name.substring(1); // we convert the first letter to uppercase
+
+        boolean hasTTS = containsLanguage(ttsLanguages, CustomLocale.getInstance(locale.getLanguage()));
+        boolean hasSTT = containsLanguage(sttLanguages, CustomLocale.getInstance(locale.getLanguage()));
+
+        if (!hasTTS && !hasSTT) {
+            return name + " (no TTS, no STT)";
+        } else if (!hasTTS) {
+            return name + " (no TTS)";
+        } else if (!hasSTT) {
+            return name + " (no STT)";
+        } else {
+            return name;
         }
     }
 
     public String getDisplayNameWithoutTTS() {
         String name = locale.getDisplayName();
-        return name.substring(0,1).toUpperCase(locale) + name.substring(1);  //we convert the first letter to uppercase
+        return name.substring(0, 1).toUpperCase(locale) + name.substring(1); // we convert the first letter to uppercase
     }
 
     public String getDisplayName(Locale locale) {
         return locale.getDisplayName(locale);
-        /*String displayLanguage;
-        if (locale.getDisplayCountry().isEmpty()) {
-            displayLanguage = locale.getDisplayLanguage();
-        } else {
-            displayLanguage = locale.getDisplayLanguage() + " (" + locale.getDisplayCountry() + ")";
-        }
-        return displayLanguage;*/
+        /*
+         * String displayLanguage;
+         * if (locale.getDisplayCountry().isEmpty()) {
+         * displayLanguage = locale.getDisplayLanguage();
+         * } else {
+         * displayLanguage = locale.getDisplayLanguage() + " (" +
+         * locale.getDisplayCountry() + ")";
+         * }
+         * return displayLanguage;
+         */
     }
 
     @Override
@@ -195,7 +215,10 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof CustomLocale) {
             CustomLocale locale = (CustomLocale) obj;
-            if (equalsLanguage(locale) && getCountry() != null && locale.getCountry() != null) {  // if the language matches and the country is present in both
+            if (equalsLanguage(locale) && getCountry() != null && locale.getCountry() != null) { // if the language
+                                                                                                 // matches and the
+                                                                                                 // country is present
+                                                                                                 // in both
                 return getCountry().equals(locale.getCountry());
             }
         }
@@ -229,7 +252,8 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
                     index = i;
                 }
             }
-            // if we don't find anything, we look for a locale for which at least the language matches
+            // if we don't find anything, we look for a locale for which at least the
+            // language matches
             for (int i = 0; i < array.size() && index == -1; i++) {
                 if (locale.equalsLanguage(array.get(i))) {
                     index = i;
