@@ -25,6 +25,8 @@ The Conversation mode is the main feature of RTranslator. In this mode, you can 
 All this in both directions.
 
 Each user can have more than one connected phone so that you can translate conversations between more than two people and in any combination.
+
+Additionally, in Conversation mode, you can now see the **profile picture** of the person you are communicating with, making the experience more personal and engaging.
 <br /><br />
 
 <h3>WalkieTalkie mode</h3>
@@ -65,20 +67,13 @@ The initial download will get the models from GitHub, however <a href="https://w
 If you have a GitHub account and want to be notified when a new release comes out you can do so by clicking, at the top of the page, on "Watch" -> "Custom" -> "Releases" -> "Apply".
 <br /><br />
 
-<h3>What's new in version 2.1</h3>
+<h3>Recent Updates</h3>
 
-- **New GUI!** Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
+- **New:** Display of peer profile pictures in Conversation Mode.
+- **Improved:** Enhanced Bluetooth stability and connection handling.
+- **Added:** Support for manual mic control in WalkieTalkie mode.
+- **Fixed:** Various bugs and performance improvements.
 
-- Added speak and copy buttons to the text translation mode.
-
-- Added the option to manually control the mics in WalkieTalkie mode.
-
-- Added the option to use low-quality languages.
-
-- Fixed some bugs.
-
-For the full list of changes see [here](https://github.com/thekarampuri/Translate-Call/releases/tag/2.1.0).
-<br /><br />
 
 <h3>Performance requirements</h3>
 
@@ -156,17 +151,9 @@ Here are the results of my optimizations:
 **N.B.** RTranslator Whisper model can also consume 0.5 GB of RAM but with an execution time of 2.1s (this mode is used for phones with less than 8 GB of RAM)
 <br /><br />
 
-<h3>Donations</h3>
+<h3>Developed by</h3>
 
-This is an open-source and completely ad-free app, I don't make any money from it.
-
-So, if you like the app and want to say thank you and support the project, you can make a donation by clicking on one of the the buttons below (any amount is well accepted).
-
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/niedev)
-
-<a href='https://www.paypal.com/donate/?business=3VBKS3WC6AFHN&no_recurring=0&currency_code=EUR'><img alt='Donate' src='https://raw.githubusercontent.com/thekarampuri/Translate-Call/v2.00/images/Paypal.png' style="width: 190px; height: 80px;" /></a>
-
-In case you will donate, or just live a star, thank you :heart:
+**Akhil**
 <br /><br />
 
 <h3>Connected external projects</h3>
