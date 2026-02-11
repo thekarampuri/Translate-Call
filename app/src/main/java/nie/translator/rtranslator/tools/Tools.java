@@ -93,7 +93,8 @@ public class Tools {
             return ((BitmapDrawable) drawable).getBitmap();
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
@@ -168,7 +169,8 @@ public class Tools {
     }
 
     public static int convertSpToPixels(Context context, float sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                context.getResources().getDisplayMetrics());
     }
 
     public static boolean copyFile(File src, File dst) {
@@ -200,17 +202,25 @@ public class Tools {
 
         if (am != null) {
             List<ActivityManager.RunningServiceInfo> l;
-            l = am.getRunningServices(50);  //il problema è qui, non è afffidabile perchè fa vedere un numero finito di services
+            l = am.getRunningServices(50); // il problema è qui, non è afffidabile perchè fa vedere un numero finito di
+                                           // services
             for (ActivityManager.RunningServiceInfo runningServiceInfo : l) {
                 runningServicesNames.add(runningServiceInfo.service.getClassName());
-                /*if (runningServiceInfo.service.getClassName().equals(WalkieTalkieService.class.getName())) {
-                    service= WALKIE_TALKIE_SERVICE;
-                }else if(runningServiceInfo.service.getClassName().equals(ConversationService.class.getName())){
-                    service= CONVERSATION_SERVICE;
-                }*/
+                /*
+                 * if
+                 * (runningServiceInfo.service.getClassName().equals(WalkieTalkieService.class.
+                 * getName())) {
+                 * service= WALKIE_TALKIE_SERVICE;
+                 * }else
+                 * if(runningServiceInfo.service.getClassName().equals(ConversationService.class
+                 * .getName())){
+                 * service= CONVERSATION_SERVICE;
+                 * }
+                 */
             }
         }
-        // only one service returns because we cannot have both multi and single device services active at the same time
+        // only one service returns because we cannot have both multi and single device
+        // services active at the same time
         return runningServicesNames;
     }
 
@@ -218,7 +228,8 @@ public class Tools {
         Bitmap bitmap;
         Bitmap bitmap1;
 
-        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.RGB_565);
+        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
@@ -232,7 +243,8 @@ public class Tools {
         return bitmap1;
     }
 
-    public static CipherData encript(String plainText, SecretKey encryptionKey) {  //encription key of 128 bit, iv of 128 bit
+    public static CipherData encript(String plainText, SecretKey encryptionKey) { // encription key of 128 bit, iv of
+                                                                                  // 128 bit
         byte[] text = Base64.decode(plainText, Base64.NO_WRAP);
 
         return encript(text, encryptionKey);
@@ -247,7 +259,8 @@ public class Tools {
             cipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
             iv = cipher.getIV();
             encryptedData = cipher.doFinal(plaintext);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException
+                | InvalidKeyException e) {
             e.printStackTrace();
         }
         if (encryptedData != null && iv != null) {
@@ -273,7 +286,8 @@ public class Tools {
             cipher.init(Cipher.DECRYPT_MODE, encryptionKey, new IvParameterSpec(cipherData.getIv()));
             data = cipher.doFinal(cipherData.getEncriptedData());
 
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException
+                | InvalidKeyException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
         return data;
@@ -290,6 +304,7 @@ public class Tools {
         for (byte[] array : arrays) {
             for (byte anArray : array) {
                 c[count] = anArray;
+                count++;
             }
         }
         return c;
@@ -320,7 +335,8 @@ public class Tools {
     }
 
     /**
-     * Returns true if the app was granted all the permissions. Otherwise, returns false.
+     * Returns true if the app was granted all the permissions. Otherwise, returns
+     * false.
      */
     public static boolean hasPermissions(Context context, String... permissions) {
         for (String permission : permissions) {
@@ -355,7 +371,8 @@ public class Tools {
 
     public static ArrayList<GuiPeer> cloneList(ArrayList<GuiPeer> list) {
         ArrayList<GuiPeer> clone = new ArrayList<GuiPeer>(list.size());
-        for (Peer item : list) clone.add((GuiPeer) item.clone());
+        for (Peer item : list)
+            clone.add((GuiPeer) item.clone());
         return clone;
     }
 
@@ -370,12 +387,10 @@ public class Tools {
         private byte[] encriptedData;
         private byte[] iv;
 
-
         public CipherData(byte[] encriptedData, byte[] iv) {
             this.encriptedData = encriptedData;
             this.iv = iv;
         }
-
 
         public byte[] getEncriptedData() {
             return encriptedData;

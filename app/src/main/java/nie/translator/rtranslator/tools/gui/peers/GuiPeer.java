@@ -80,10 +80,10 @@ public class GuiPeer extends Peer implements Listable {
         }
     }
 
-    //parcelable implementation
+    // parcelable implementation
     public GuiPeer(Parcel in) {
         super(in);
-        in.readByteArray(userImage);
+        userImage = in.createByteArray();
     }
 
     public static final Parcelable.Creator<GuiPeer> CREATOR = new Parcelable.Creator<GuiPeer>() {
