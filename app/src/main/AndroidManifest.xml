@@ -58,12 +58,6 @@
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/Theme.App.Starting">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
         </activity>
         <!--configChanges serve a evitare il riavvio dell' activity quando ruota e quindi per evitare che alla rotazione si notifichi con un Toast l' avvio del
         service in background, inoltre così la rotazione sarà più fluida e per ora non abbiamo problemi ne per la rotazione ne per il ridimensionamento quando in finestra-->
@@ -74,6 +68,12 @@
             android:configChanges="orientation|screenLayout|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.Speech">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="nie.translator.rtranslator.settings.SettingsActivity"
