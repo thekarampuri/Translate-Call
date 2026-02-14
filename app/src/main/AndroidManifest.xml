@@ -42,6 +42,7 @@
         android:name="nie.translator.rtranslator.Global"
         tools:replace="android:allowBackup"
         android:allowBackup="false"
+        android:usesCleartextTraffic="true"
         android:fullBackupContent="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"

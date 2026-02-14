@@ -77,6 +77,7 @@ public class TranslationFragment extends Fragment {
     private FloatingActionButton conversationButtonSmall;
     private TextView walkieTalkieButtonText;
     private TextView conversationButtonText;
+    private FloatingActionButton longDistanceButton;
     private EditText inputText;
     private EditText outputText;
     private CardView firstLanguageSelector;
@@ -154,6 +155,7 @@ public class TranslationFragment extends Fragment {
         conversationButtonSmall = view.findViewById(R.id.buttonConversationSmall);
         walkieTalkieButtonText = view.findViewById(R.id.textButton1);
         conversationButtonText = view.findViewById(R.id.textButton2);
+        longDistanceButton = view.findViewById(R.id.buttonLongDistance);
         inputText = view.findViewById(R.id.multiAutoCompleteTextView);
         outputText = view.findViewById(R.id.multiAutoCompleteTextView2);
         lineSeparator = view.findViewById(R.id.lineSeparator);
@@ -228,6 +230,15 @@ public class TranslationFragment extends Fragment {
                 activity.setFragment(VoiceTranslationActivity.PAIRING_FRAGMENT);
             }
         });
+        if (longDistanceButton != null) {
+            longDistanceButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                     activity.setFragment(VoiceTranslationActivity.LONG_DISTANCE_FRAGMENT);
+                }
+            });
+        }
+
         translateListener = new Translator.TranslateListener() {
             @Override
             public void onTranslatedText(String textToTranslate, String text, long resultID, boolean isFinal, CustomLocale languageOfText) {

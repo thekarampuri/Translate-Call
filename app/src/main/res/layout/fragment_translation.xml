@@ -667,7 +667,7 @@
                         android:text="@string/translate"
                         android:textColor="@color/white"
                         android:theme="@style/Theme.MaterialComponents"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:outlineProvider="none"
                         android:lines="1"
                         android:stateListAnimator="@animator/button_press_animator"
@@ -802,6 +802,24 @@
                         app:layout_constraintStart_toStartOf="@+id/buttonMicRight"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.998" />
+
+                    <!-- Long Distance Button -->
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/buttonLongDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/walkie_talkie_icon" 
+                        android:visibility="visible"
+                        app:backgroundTint="@color/primary"
+                        app:elevation="0dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonMicRight"
+                        app:layout_constraintStart_toEndOf="@+id/buttonMicLeft"
+                        app:layout_constraintTop_toTopOf="@+id/buttonMicLeft"
+                        app:maxImageSize="40dp"
+                        app:tint="@color/white" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

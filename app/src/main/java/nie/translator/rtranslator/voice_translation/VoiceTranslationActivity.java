@@ -76,9 +76,19 @@ public class VoiceTranslationActivity extends GeneralActivity {
     public static final int CONVERSATION_FRAGMENT = 1;
     public static final int WALKIE_TALKIE_FRAGMENT = 2;
     public static final int TRANSLATION_FRAGMENT = 3;
+    public static final int LONG_DISTANCE_FRAGMENT = 4;
     public static final int DEFAULT_FRAGMENT = TRANSLATION_FRAGMENT;
     public static final int NO_PERMISSIONS = -10;
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 2;
+
+    // ... (existing code)
+
+
+
+
+
+
+
     public static String[] REQUIRED_PERMISSIONS;
     //objects
     private Global global;
@@ -256,6 +266,21 @@ public class VoiceTranslationActivity extends GeneralActivity {
                 }
                 break;
             }
+            case LONG_DISTANCE_FRAGMENT: {
+                // possible stop of the Conversation and WalkieTalkie Service
+                stopConversationService();
+                stopWalkieTalkieService();
+                if (getCurrentFragment() != LONG_DISTANCE_FRAGMENT) {
+                    LongDistanceFragment longDistanceFragment = new LongDistanceFragment();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.fragment_container, longDistanceFragment);
+                    transaction.commit();
+                    currentFragment = LONG_DISTANCE_FRAGMENT;
+                    saveFragment();
+                }
+                break;
+            }
         }
     }
 
@@ -290,6 +315,9 @@ public class VoiceTranslationActivity extends GeneralActivity {
                 }
                 if (currentFragment.getClass().equals(TranslationFragment.class)) {
                     return TRANSLATION_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(LongDistanceFragment.class)) {
+                    return LONG_DISTANCE_FRAGMENT;
                 }
             }
         }
@@ -450,6 +478,8 @@ public class VoiceTranslationActivity extends GeneralActivity {
             } else if (fragment instanceof WalkieTalkieFragment) {
                 setFragment(DEFAULT_FRAGMENT);
             } else if (fragment instanceof PairingFragment) {
+                setFragment(DEFAULT_FRAGMENT);
+            } else if (fragment instanceof LongDistanceFragment) {
                 setFragment(DEFAULT_FRAGMENT);
             }else{
                 super.onBackPressed();

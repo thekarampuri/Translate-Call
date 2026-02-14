@@ -4,17 +4,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'com.android.tools.build:gradle:8.3.2'
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
 
 apply plugin: 'com.android.application'
 
@@ -24,14 +17,15 @@ ext {
 }
 
 android {
+    ndkVersion "26.1.10909125"
     namespace 'nie.translator.rtranslator'
-    compileSdkVersion 33  //33
+        compileSdk 33
     defaultConfig {
         applicationId "nie.translator.rtranslator"
-        targetSdkVersion 33
+        targetSdk 33
         versionCode 24
         versionName '2.1.4'
-        minSdkVersion 24
+        minSdk 24
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -64,12 +58,6 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.2'
         resolutionStrategy.force "androidx.annotation:annotation:$supportLibraryVersion"
@@ -81,6 +69,10 @@ android {
             path file('src/main/cpp/CMakeLists.txt')
             version '3.22.1'
         }
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
@@ -122,4 +114,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // WebRTC & Signaling
+    implementation 'org.jitsi:webrtc:124.0.0'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 }
